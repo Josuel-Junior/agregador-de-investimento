@@ -6,6 +6,7 @@ import com.desafio.agregadordeinvestimento.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -34,5 +35,11 @@ public class UserService {
 
          return  userSaved.getUserId();
 
+    }
+
+    public Optional<User> getUserById(String userId){
+
+
+      return userRepository.findById(UUID.fromString(userId));
     }
 }
