@@ -2,6 +2,7 @@ package com.desafio.agregadordeinvestimento.controller;
 
 
 import com.desafio.agregadordeinvestimento.dto.CreatedUserDto;
+import com.desafio.agregadordeinvestimento.dto.UpdateUserDto;
 import com.desafio.agregadordeinvestimento.entity.User;
 import com.desafio.agregadordeinvestimento.userService.UserService;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,15 @@ public class UserController {
         var users = userService.listUsers();
 
         return ResponseEntity.ok(users);
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<Void> updateUserById(@PathVariable("userId") String userId, @RequestBody UpdateUserDto updateUserDto){
+
+
+        userService.updateUser(userId, updateUserDto);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{userId}")

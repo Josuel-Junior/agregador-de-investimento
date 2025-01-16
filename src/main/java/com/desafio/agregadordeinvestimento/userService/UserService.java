@@ -1,6 +1,7 @@
 package com.desafio.agregadordeinvestimento.userService;
 
 import com.desafio.agregadordeinvestimento.dto.CreatedUserDto;
+import com.desafio.agregadordeinvestimento.dto.UpdateUserDto;
 import com.desafio.agregadordeinvestimento.entity.User;
 import com.desafio.agregadordeinvestimento.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,32 @@ public class UserService {
     public List<User> listUsers(){
         return userRepository.findAll();
     }
+
+
+
+    public void updateUser(String userId, UpdateUserDto updateUserDto){
+        var id = UUID.fromString(userId);
+
+        var userEntity = userRepository.findById(id);
+
+        if (userEntity.isPresent()){
+            var user = userEntity.get();
+
+            if (updateUserDto.username() != null){
+                user.setUsername(updateUserDto.username());
+            }
+
+            if (updateUserDto.password() != null){
+                user.setPassword(updateUserDto.password());
+            }
+            userRepository.save(user);
+
+        }
+
+
+
+    }
+
 
     public void delete(String userId){
 
