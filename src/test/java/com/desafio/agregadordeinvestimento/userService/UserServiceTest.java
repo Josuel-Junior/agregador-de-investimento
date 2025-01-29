@@ -17,6 +17,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -35,6 +36,7 @@ class UserServiceTest {
         @DisplayName("Should created a user with success")
         void shouldCreateUser() {
 
+
             var user = new User(
                     UUID.randomUUID(),
                     "username",
@@ -50,6 +52,19 @@ class UserServiceTest {
             var output = userService.createdUser(input);
 
             assertNotNull(output);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenErrorOcurrs() {
+
+
+            doThrow(new RuntimeException()).when(userRepository).save(any());
+            var input = new CreatedUserDto("josuel", "josuel@teste.com", "123456");
+
+
+
+            assertThrows(RuntimeException.class, () -> userService.createdUser(input));
+
         }
     }
 
