@@ -41,7 +41,6 @@ public class UserService {
 
     public Optional<User> getUserById(String userId){
 
-
       return userRepository.findById(UUID.fromString(userId));
     }
 
