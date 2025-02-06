@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -160,5 +161,34 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    class getListUser{
+        @Test
+        @DisplayName("shloud get listUser")
+        void shouldGetLisUser() {
+
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+
+            var userList = List.of(user);
+
+            doReturn(userList).when(userRepository).findAll();
+
+            var outPut = userService.listUsers();
+
+            assertNotNull(outPut);
+
+            assertEquals(userList.size(), outPut.size());
+
+
+
+        }
+    }
 
 }
