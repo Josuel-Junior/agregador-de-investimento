@@ -15,14 +15,13 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-
     private UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public UUID createdUser(CreatedUserDto createdUserDto){
+    public UUID createdUser(CreatedUserDto createdUserDto) {
 
         var entity = new User(
                 null,
@@ -32,37 +31,36 @@ public class UserService {
                 Instant.now(),
                 null);
 
-         var userSaved = userRepository.save(entity);
+        var userSaved = userRepository.save(entity);
 
 
-         return  userSaved.getUserId();
+        return userSaved.getUserId();
 
     }
 
-    public Optional<User> getUserById(String userId){
+    public Optional<User> getUserById(String userId) {
 
-      return userRepository.findById(UUID.fromString(userId));
+        return userRepository.findById(UUID.fromString(userId));
     }
 
-    public List<User> listUsers(){
+    public List<User> listUsers() {
         return userRepository.findAll();
     }
 
 
-
-    public void updateUser(String userId, UpdateUserDto updateUserDto){
+    public void updateUser(String userId, UpdateUserDto updateUserDto) {
         var id = UUID.fromString(userId);
 
         var userEntity = userRepository.findById(id);
 
-        if (userEntity.isPresent()){
+        if (userEntity.isPresent()) {
             var user = userEntity.get();
 
-            if (updateUserDto.username() != null){
+            if (updateUserDto.username() != null) {
                 user.setUsername(updateUserDto.username());
             }
 
-            if (updateUserDto.password() != null){
+            if (updateUserDto.password() != null) {
                 user.setPassword(updateUserDto.password());
             }
             userRepository.save(user);
@@ -70,18 +68,17 @@ public class UserService {
         }
 
 
-
     }
 
 
-    public void delete(String userId){
+    public void delete(String userId) {
 
         var id = UUID.fromString(userId);
 
         var userExists = userRepository.existsById(id);
 
 
-        if (userExists){
+        if (userExists) {
             userRepository.deleteById(id);
         }
 

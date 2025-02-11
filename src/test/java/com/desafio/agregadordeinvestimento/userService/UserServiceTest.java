@@ -1,6 +1,7 @@
 package com.desafio.agregadordeinvestimento.userService;
 
 import com.desafio.agregadordeinvestimento.dto.CreatedUserDto;
+import com.desafio.agregadordeinvestimento.dto.UpdateUserDto;
 import com.desafio.agregadordeinvestimento.entity.User;
 import com.desafio.agregadordeinvestimento.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -79,16 +80,15 @@ class UserServiceTest {
             var input = new CreatedUserDto("josuel", "josuel@teste.com", "123456");
 
 
-
             assertThrows(RuntimeException.class, () -> userService.createdUser(input));
 
         }
     }
 
     @Nested
-    class getUserById{
+    class getUserById {
         @Test
-        @DisplayName("Sould get by id with success when optional is present")
+        @DisplayName("Sould get user by id with success when optional is present")
         void shouldGetUserByIdWithSuccessWhenOptionalIsPresent() {
 
             // arrange
@@ -153,7 +153,7 @@ class UserServiceTest {
             doThrow(new RuntimeException()).when(userRepository).findById(uuidArgumentCaptor.capture());
 
 
-           assertThrows(RuntimeException.class, ()-> userService.getUserById(uuid.toString()));
+            assertThrows(RuntimeException.class, () -> userService.getUserById(uuid.toString()));
 
             assertEquals(uuid, uuidArgumentCaptor.getValue());
 
@@ -161,7 +161,7 @@ class UserServiceTest {
     }
 
     @Nested
-    class getListUser{
+    class getListUser {
         @Test
         @DisplayName("shloud get listUser")
         void shouldGetLisUser() {
@@ -186,13 +186,12 @@ class UserServiceTest {
             assertEquals(userList.size(), outPut.size());
 
 
-
         }
     }
 
 
     @Nested
-    class deleteById{
+    class deleteById {
         @Test
         @DisplayName("Shloud delete user with success when user exists")
         void shouldDeleteWithSuccessWhenUserExist() {
@@ -239,11 +238,77 @@ class UserServiceTest {
             assertEquals(userId, uuidArgumentCaptor.getValue());
 
 
-
             verify(userRepository, times(1)).existsById(uuidArgumentCaptor.getValue());
 
 
             verify(userRepository, times(0)).deleteById(any());
+        }
+    }
+
+    @Nested
+    class updateUserById {
+
+        @Test
+        @DisplayName("Sould update user by id with user exists and username and password is filled")
+        void shouldUpdateUserByIdWhenUserExistsAndUsernameAndPasswordIsFilled() {
+
+            // arrange
+
+            var updateDto = new UpdateUserDto("newusername", "newpassword");
+
+            var user = new User(
+                    UUID.randomUUID(),
+                    "username",
+                    "email@email.com",
+                    "password",
+                    Instant.now(),
+                    null
+            );
+            doReturn(Optional.of(user)).when(userRepository).findById(uuidArgumentCaptor.capture());
+
+
+            doReturn(user).when(userRepository).save(userArgumentCaptor.capture());
+
+            // act
+
+           userService.updateUser(user.getUserId().toString(),updateDto);
+            // assert
+
+
+            assertEquals(user.getUserId(), uuidArgumentCaptor.getValue());
+
+            var userCaptured = userArgumentCaptor.getValue();
+
+            assertEquals(updateDto.username(), userCaptured.getUsername());
+            assertEquals(updateDto.password(), userCaptured.getPassword());
+
+            verify(userRepository, times(1)).findById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(1)).save(user);
+        }
+        @Test
+        @DisplayName("Sould not update user when user not exists")
+        void shouldNotUpdateUserWhenUserNotExists() {
+
+            // arrange
+
+            var updateDto = new UpdateUserDto("newusername", "newpassword");
+
+
+            doReturn(Optional.empty()).when(userRepository).findById(uuidArgumentCaptor.capture());
+
+            var userId = UUID.randomUUID();
+
+            // act
+
+           userService.updateUser(userId.toString(),updateDto);
+            // assert
+
+
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+
+
+            verify(userRepository, times(1)).findById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(0)).save(any());
         }
     }
 
