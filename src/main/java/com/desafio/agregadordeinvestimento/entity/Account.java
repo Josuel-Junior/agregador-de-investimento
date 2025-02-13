@@ -18,6 +18,12 @@ public class Account {
     @ManyToOne
     private User user;
 
+
+
+    @OneToOne(mappedBy = "account")
+    @PrimaryKeyJoinColumn
+    private BillingAdress billingAdress;
+
     public User getUser() {
         return user;
     }
